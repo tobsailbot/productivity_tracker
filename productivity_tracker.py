@@ -2,26 +2,26 @@ from tkinter import *
 
 timer_enable = False
 
-class Task():
-
-    def createTask(self):
-
-        def taskName():
-
-        def taskTime():
-
-        def taskInfo():
-
-    def taskStart(self):
-
-    def taskTimeRemaining(self):
-
-    def openSoftware(self):
-
-    def taskFinish(self):
-
-
-
+# class Task():
+#
+#     def createTask(self):
+#
+#         def taskName():
+#
+#         def taskTime():
+#
+#         def taskInfo():
+#
+#     def taskStart(self):
+#
+#     def taskTimeRemaining(self):
+#
+#     def openSoftware(self):
+#
+#     def taskFinish(self):
+#
+#
+#
 
 
 
@@ -51,17 +51,34 @@ def StartWindow():
     # canvas.create_oval(20, 20, 3, 3, fill='red')
     # canvas.grid(row=0, column=0)
 
-    task = Frame(main_frame, bg='red')
-    task.pack(fill='y', side= 'left')
 
-    task_1 = Label(task, text="Task 1",bg="green", fg="white")
-    task_1.grid(row=0, column=0)
+    b1 = Button(window, text="Btn 1")
+    b1.pack(fill=BOTH, expand=True)
+
+    # See, in command forget() method is passed
+    b2 = Button(window, text="Btn 2", command= b1.forget())
+    b2.pack(fill=BOTH, expand=True)
+
+    # In command retrieve() method is passed
+    b3 = Button(window, text="Btn 3", command= b1.pack())
+    b3.pack(fill=BOTH, expand=True)
+
+
+    # task_1 = Label(task, text="Task 1 ASDASDASDASDASDASD",bg="green", fg="white")
+    # task_1.grid(row=0, column=2)
+    #
+    # boton = Button(task,
+    #                text='hola tagoa ASDASDASD',
+    #                command=task_1.forget())
+    # boton.grid(row=2, column=0, rowspan=3)
     #
     # task2 = Label(frame, text="Task 2",bg="green", fg="white")
     # task2.grid(row=1, column=0,pady=30, padx=100)
     #
     # time_interval = Label(frame, text="15:30 - 17:30",bg="green", fg="white")
     # time_interval.grid(row=0, column=1)
+
+
 
     if timer_enable == True:
         global stopwatch_label  # modify the stopwatch from gloabal
