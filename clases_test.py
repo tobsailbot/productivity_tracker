@@ -44,15 +44,17 @@ def retrieve(widget):
 
 
 # Button widgets
-b1 = Button(root, text="Btn 1")
+b1 = Button(root, text="description")
 b1.pack(fill=BOTH, expand=True)
 
+forget(b1)
+
 # See, in command forget() method is passed
-b2 = Button(root, text="Btn 2", command=lambda: forget(b1))
+b2 = Button(root, text="^", command=lambda: forget(b1))
 b2.pack(fill=BOTH, expand=True)
 
 # In command retrieve() method is passed
-b3 = Button(root, text="Btn 3", command=lambda: retrieve(b1))
+b3 = Button(root, text="v", command=lambda: retrieve(b1))
 b3.pack(fill=BOTH, expand=True)
 
 # infinite loop, interrupted by keyboard or mouse

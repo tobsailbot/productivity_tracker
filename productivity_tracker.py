@@ -20,8 +20,6 @@ timer_enable = False
 #
 #     def taskFinish(self):
 #
-#
-#
 
 
 
