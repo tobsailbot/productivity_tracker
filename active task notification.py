@@ -2,6 +2,7 @@
 from tkinter import *
 
 
+
 #----------------------------------------------------------------------------------------
 
 timer_enable = True
@@ -10,13 +11,7 @@ timer_enable = True
 # use a boolean variable to help control state of time (running or not running)
 running = False
 # time variables initially set to 0
-hours, minutes, seconds = 1, 30, 0
-
-total_minutes = minutes + (hours * 60)
-
-# ***** NOTES ON GLOBAL *****
-# global will be used to modify variables outside functions
-# another option would be to use a class and subclass Frame
+hours, minutes, seconds = 2, 45, 0
 
 # ***** FUNCTIONS *****
 # start, pause, and reset functions will be called when the buttons are clicked
@@ -70,6 +65,7 @@ def update():
     hours_string = f'{hours}' if hours > 9 else f'0{hours}'
     minutes_string = f'{minutes}' if minutes > 9 else f'0{minutes}'
     seconds_string = f'{seconds}' if seconds > 9 else f'0{seconds}'
+
     # update timer label after 1000 ms (1 second)
     stopwatch_label.config(text=hours_string + ':' + minutes_string + ':' + seconds_string)
     # after each second (1000 milliseconds), call update function
@@ -77,17 +73,37 @@ def update():
     global update_time
     update_time = stopwatch_label.after(10, update)
 
-    # get the total minutes
-    global total_minutes
-    current_minutes = minutes + (hours * 60)
-    print(current_minutes)
-    if total_minutes == total_minutes-25:
-        print('BREAK TIME')
+    # make a break window when 1500 seconds have passed / 25 minutes
+    update_break = int(update_time[6:])
+    if update_break != 0:
+        if update_break%200 == 0:
+            print(update_break)
+            print('hora del break')
+            NewWindow(window)
 
     # stop if time = 0:0:0
     if hours==0 and minutes==0 and seconds == 0:
         print('time ends')
         stopwatch_label.after_cancel(update_time)
+
+#----------------------------------------------------------------------------------------
+
+# creates the Break notification window
+
+class NewWindow(Toplevel):
+
+    def __init__(self, window=None):
+        super().__init__(master=window)
+
+        self.title("New Window")
+        self.geometry("200x200")
+
+        label = Label(self, text="Break Time...")
+        label.pack()
+
+        # destroy window after 5 minutes / 300000 segundos
+        break_time = self.after(300, lambda: self.destroy())
+        print(break_time)
 
 
 
@@ -98,23 +114,6 @@ def update():
 window = Tk()
 
 window.geometry('200x400')
-
-
-# method to make widget invisible
-def hide(widget):
-        widget.grid_forget()
-
-
-# method to make widget visible
-def unhide(widget):
-        widget.grid()
-
-
-# This creates a new button.....
-# def newButton():
-#     new_button = Button(text='asdasd')
-#     new_button.pack()
-
 
 # frame widget
 frame = Frame(window,bg='yellow')

@@ -14,7 +14,6 @@
 #         print('la nueva tarea es: ')
 #         print(self.name)
 #
-#
 # task = Task()
 #
 # task.createTask()
@@ -30,7 +29,7 @@ root = Tk()
 
 # method to make widget invisible
 # or remove from toplevel
-def forget(widget):
+def hide(widget):
     # This will remove the widget from toplevel
     # basically widget do not get deleted
     # it just becomes invisible and loses its position
@@ -39,7 +38,7 @@ def forget(widget):
 
 
 # method to make widget visible
-def retrieve(widget):
+def unhide(widget):
     widget.pack(fill=BOTH, expand=True)
 
 
