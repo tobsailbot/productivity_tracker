@@ -39,39 +39,51 @@ label5.grid(row='7',column= '0',columnspan=4,sticky="W",pady=(20,0))
 
 #------------- entrys -------------
 
-task_name = Entry (frame,width=30)
-task_name.grid(row='1',column= '0',columnspan=3)
+name = Entry (frame,width=30)
+name.grid(row='1',column= '0',columnspan=3)
 
-entry1 = ttk.Spinbox(from_=1, to=24,state='readonly')
-entry1.place(x=20, y=110, width=40)
+fromH = ttk.Spinbox(from_=1, to=24,state='readonly')
+fromH.place(x=20, y=110, width=40)
 
-entry2 = ttk.Spinbox(from_=0, to=59,state='readonly')
-entry2.place(x=60, y=110, width=40)
+fromM = ttk.Spinbox(from_=0, to=59,state='readonly')
+fromM.place(x=60, y=110, width=40)
 
-entry3 = ttk.Spinbox(from_=1, to=24,state='readonly')
-entry3.place(x=140, y=110, width=40)
+toH = ttk.Spinbox(from_=1, to=24,state='readonly')
+toH.place(x=140, y=110, width=40)
 
-entry4 = ttk.Spinbox(from_=0, to=59,state='readonly')
-entry4.place(x=180, y=110, width=40)
+toM = ttk.Spinbox(from_=0, to=59,state='readonly')
+toM.place(x=180, y=110, width=40)
 
-entry5 = Text (frame,width=30,height=5,font=("Arial", "10"))
-entry5.grid(row='6',column= '0',columnspan=4,ipady=50)
+description = Text (frame,width=30,height=5,font=("Arial", "10"))
+description.grid(row='6',column= '0',columnspan=4,ipady=50)
 
 def getResults():
 
     # get a tuple with the entries
-    e = task_name.get(),entry1.get(), entry2.get(), entry3.get(),entry4.get(), entry5.get("1.0",END)
+    e = name.get(),fromH.get(), fromM.get(), toH.get(),toM.get(), description.get("1.0",END)
     print(e)
     conn = sqlite3.connect('tasks.db')
     c = conn.cursor()
-    c.execute("""CREATE TABLE tasks(
-            name text,
-            fromH integer,
-            fromM integer,
-            toH integer,
-            toM integer,
-            description text
-    )""")
+    # c.execute("""CREATE TABLE tasks(
+    #         name text,
+    #         fromH integer,
+    #         fromM integer,
+    #         toH integer,
+    #         toM integer,
+    #         description text
+    # )""")
+
+    # insert the values into the db table
+    c.execute("INSERT INTO tasks VALUES (:name, :fromH, :fromM, :toH, :toM, :description)",
+              {
+                  'name': name.get(),
+                  'fromH': fromH.get(),
+                  'fromM': fromM.get(),
+                  'toH': toH.get(),
+                  'toM':toM.get(),
+                  'description':description.get("1.0",END)
+              })
+
     conn.commit()
     conn.close()
 
