@@ -4,9 +4,24 @@ import sqlite3
 
 window = Tk()
 
-# calculate the screen width based on the resolution
-screen_width = window.winfo_screenwidth()
-screen_x= int(screen_width/2)
+tablas = None
+
+class NewWindow(Toplevel):
+
+    def __init__(self, window=None):
+        super().__init__(master=window)
+
+        self.title("New Window")
+        self.geometry("500x200")
+
+        self.cuadro = Frame(self,bg='yellow')
+        self.cuadro.pack(fill=BOTH,pady=10,padx=20)
+
+        global tablas
+        label = Label(self.cuadro, text=tablas)
+        label.pack()
+        print(f'estas son las tablas {tablas}')
+
 
 window.resizable(False,False)
 #window.geometry(f'{150}x{67}+{screen_x}+{0}')  # window size(x) and position (+)
@@ -42,16 +57,16 @@ label5.grid(row='7',column= '0',columnspan=4,sticky="W",pady=(20,0))
 name = Entry (frame,width=30)
 name.grid(row='1',column= '0',columnspan=3)
 
-fromH = ttk.Spinbox(from_=1, to=24,state='readonly')
+fromH = ttk.Spinbox(from_=1, to=24)
 fromH.place(x=20, y=110, width=40)
 
-fromM = ttk.Spinbox(from_=0, to=59,state='readonly')
+fromM = ttk.Spinbox(from_=0, to=59)
 fromM.place(x=60, y=110, width=40)
 
-toH = ttk.Spinbox(from_=1, to=24,state='readonly')
+toH = ttk.Spinbox(from_=1, to=24)
 toH.place(x=140, y=110, width=40)
 
-toM = ttk.Spinbox(from_=0, to=59,state='readonly')
+toM = ttk.Spinbox(from_=0, to=59)
 toM.place(x=180, y=110, width=40)
 
 description = Text (frame,width=30,height=5,font=("Arial", "10"))
@@ -61,7 +76,7 @@ def getResults():
 
     # get a tuple with the entries
     e = name.get(),fromH.get(), fromM.get(), toH.get(),toM.get(), description.get("1.0",END)
-    print(e)
+    # print(e)
     conn = sqlite3.connect('tasks.db')
     c = conn.cursor()
     # c.execute("""CREATE TABLE tasks(
@@ -83,7 +98,6 @@ def getResults():
                   'toM':toM.get(),
                   'description':description.get("1.0",END)
               })
-
     conn.commit()
     conn.close()
 
@@ -94,10 +108,31 @@ def getResults():
         print(i)
 
 
+def showResults():
+
+    conn = sqlite3.connect('tasks.db')
+    c = conn.cursor()
+
+    c.execute("SELECT * FROM tasks")
+    global tablas
+    tablas = c.fetchall()[-1]
+
+
+    conn.commit()
+    conn.close()
+
+
+def dataBase():
+    getResults()
+    showResults()
+    NewWindow(window)
+
 
 getbutton = Button(frame)
-getbutton.configure(text='Ok',command=getResults)
+getbutton.configure(text='Ok',command=dataBase)
 getbutton.grid(row='10',column= '0',columnspan=3,pady=(20,0))
+
+
 
 # infinite loop, interrupted by keyboard or mouse
 mainloop()
