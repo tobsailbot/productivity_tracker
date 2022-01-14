@@ -1,4 +1,3 @@
-
 # objetivo: crear un frame mediante una clase, y dentro del frame un boton, y un label, el boton debera poder cambiar el color del label del frame propio
 
 from tkinter import *
