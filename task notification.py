@@ -21,7 +21,7 @@ five_min = None
 # use a boolean variable to help control state of time (running or not running)
 running = False
 # time variables initially set to 0
-hours, minutes, seconds = 1, 0, 5
+hours, minutes, seconds = 0, 10, 5
 
 # ***** FUNCTIONS *****
 # start, pause, and reset functions will be called when the buttons are clicked

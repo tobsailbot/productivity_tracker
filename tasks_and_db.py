@@ -20,6 +20,7 @@ class NewWindow(Toplevel):
         self.frame = Frame(self)
         self.frame.pack(fill=BOTH, pady=10, padx=20)
 
+        # --------- labels -----------
         self.label1 = Label(self.frame, text='Task name:')
         self.label1.grid(row='0', column='0', columnspan=4, sticky="W", pady=(20, 0))
 
@@ -62,43 +63,42 @@ class NewWindow(Toplevel):
         self.description.grid(row='6', column='0', columnspan=4, ipady=50)
 
         self.getbutton = Button(self.frame)
-        self.getbutton.configure(text='Ok', command=self.fetchDataBase)
+        self.getbutton.configure(text='Ok', command=self.commitResults)
         self.getbutton.grid(row='10', column='0', columnspan=3, pady=(20, 0))
 
     def commitResults(self):
 
             # get a tuple with the entries
             e = self.name.get(), self.fromH.get(), self.fromM.get(), self.toH.get(), self.toM.get(), self.description.get("1.0", END)
-            # print(e)
-            conn = sqlite3.connect('tasks.db')
-            c = conn.cursor()
-            # c.execute("""CREATE TABLE tasks(
-            #         name text,
-            #         fromH integer,
-            #         fromM integer,
-            #         toH integer,
-            #         toM integer,
-            #         description text
-            # )""")
 
-            # insert the values into the db table
-            c.execute("INSERT INTO tasks VALUES (:name, :fromH, :fromM, :toH, :toM, :description)",
-                      {
-                          'name': self.name.get(),
-                          'fromH': self.fromH.get(),
-                          'fromM': self.fromM.get(),
-                          'toH': self.toH.get(),
-                          'toM': self.toM.get(),
-                          'description': self.description.get("1.0", END)
-                      })
-            conn.commit()
-            conn.close()
+            # if any field is empty...
+            if all(e) == False:
+                print('--- Empty field!')
+                empty_field = messagebox.showinfo(message=f"Error empty field", title="Título")
+            else:
+                print('--- Commit to database')
 
-            # check if any field is empty
-            for i in e:
-                if i == '':
-                    messagebox.showinfo(message="Error", title="Título")
-                print(i)
+                conn = sqlite3.connect('tasks.db')
+                c = conn.cursor()
+                # insert the values into the db table
+                c.execute("INSERT INTO tasks VALUES (:name, :fromH, :fromM, :toH, :toM, :description)",
+                              {
+                                  'name': self.name.get(),
+                                  'fromH': self.fromH.get(),
+                                  'fromM': self.fromM.get(),
+                                  'toH': self.toH.get(),
+                                  'toM': self.toM.get(),
+                                  'description': self.description.get("1.0", END)
+                              })
+                conn.commit()
+                conn.close()
+                self.destroy()
+                self.showResults()
+                self.newTaskSlot()
+
+
+
+
 
     def showResults(self):
 
@@ -117,7 +117,7 @@ class NewWindow(Toplevel):
 
         # Task Frame
         window.task_frame = Frame(window, bg='grey',highlightbackground="black",highlightthickness=1)
-        window.task_frame.pack(fill=BOTH, pady=10, padx=20)
+        window.task_frame.pack(fill=BOTH, pady=(10,0), padx=20)
 
         # Task Name
         window.task_name = Label(window.task_frame, text=data_base[0])
@@ -153,12 +153,6 @@ class NewWindow(Toplevel):
         window.show_desc = Button(window.task_desc_frame)
         window.show_desc.configure(text='v',width=50,height=1, command= show_wg)
         window.show_desc.pack(ipady=1)
-
-    def fetchDataBase(self):
-            self.commitResults()
-            self.showResults()
-            self.newTaskSlot()
-            self.destroy()
 
 
 window.title("Productivity Tracker")
