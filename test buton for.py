@@ -1,21 +1,21 @@
-# objetivo: crear un frame mediante una clase, y dentro del frame un boton, y un label, el boton debera poder cambiar el color del label del frame propio
+# objetivo: crear un frame mediante una clase, y dentro del frame un boton, y un label, el boton deberá poder cambiar el color del label del frame propio
 
 from tkinter import *
 from tkinter import ttk
+from tkinter import colorchooser
 window = Tk()
 
 window.title("Productivity Tracker")
-# window.geometry("400x500")
+window.geometry("400x500")
+window.configure(bg='grey64')
 
 fetch_all = [('ESTO ES UN TEST', '', 2, 1, '', '\n'),
              ('3434', 3, 4, 4, '', '434\n'),
              ('hola gato xd', 2, 33, 2, 3, '\n'),
              ('Como hacer videos', 14, 30, 15, 0, 'hola gastoo\n'),
              ('Test 3', 15, 30, 12, 55, 'esto es un testeooooo\nasdasdasdajajajaja\n\n'), ('asdasdasd', 24, 4, 4, 24, 'asdasd\n'),
-             ('34', 34, 4, 34, 34, '3434\n'), ('asdasd', 5, 5, 5, 23, '\n'),
-             ('232323', 2, 2, 2, 4, '\n'), ('testeoo', 15, 30, 16, 55, 'esto es una descpcion de prueba xd\n'),
-             ('probando la porongola xd', 15, 45, 16, 80, 'ghoalaohohohohlalal\n')]
-
+             ('34', 34, 4, 34, 34, '3434\n'), ('asdasdasd', 24, 4, 4, 24, 'asdasd\n'),
+             ('34', 34, 4, 34, 34, '3434\n')]
 
 class NewTaskFrame(Frame):
     def __init__(self, name, fromH, fromM, toH, toM, desc, **kwargs):
@@ -60,13 +60,15 @@ class NewTaskFrame(Frame):
         self.show_desc.configure(text='v',width=50,height=-10,bd=0, command= show_wg)
         self.show_desc.grid(row=1,column=0)
 
-
 def dothings():
     print('Button class worked')
     btn1.configure(bg='red')
 
 for i in fetch_all:
     btn1 = NewTaskFrame(i[0],i[1],i[2],i[3],i[4],i[5])
+
+
+
 
 
 mainloop()
