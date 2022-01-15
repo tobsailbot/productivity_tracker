@@ -14,7 +14,9 @@ class NewTask(Toplevel):
 
     def __init__(self, window=None):
         super().__init__(master=window)
+        # Creates an unique window instance
         self.grab_set()
+        # Not resizable
         self.resizable(False, False)
         self.title("New Task")
 
@@ -127,7 +129,7 @@ class NewTaskFrame(Frame):
         Frame.__init__(self,main_frame)
 
         # Task Frame
-        self.configure(highlightbackground="black",highlightthickness=1)
+        self.configure(highlightbackground="grey",highlightthickness=1)
         self.pack(fill=BOTH, pady=(10,0), padx=20)
 
         # Task Name
@@ -138,9 +140,8 @@ class NewTaskFrame(Frame):
         self.task_time = Label(self, text=f'{fromH}:{fromM} - {toH}:{toM}')
         self.task_time.grid(row=0,column=0,sticky='E',padx=(0,10))
 
-        # get the row id
+        # Get the row 'id' of the database
         self.id = id
-        print(self.id)
 
         def deleteFrame():
             MsgBox = messagebox.askquestion('Exit Application', 'Are you sure you want to delete this task?',icon='warning')
@@ -159,14 +160,13 @@ class NewTaskFrame(Frame):
         self.delete_btn.grid(sticky='E')
 
         # Task description Frame
-        self.task_desc_frame = Frame(self,highlightbackground="black",highlightthickness=1)
+        self.task_desc_frame = Frame(self,highlightbackground="black",highlightthickness=0)
         self.task_desc_frame.grid()
-
 
         # Define a function to show/hide widget
         def show_wg():
             self.hide_desc.grid(row=1,column=0)
-            self.task_desc.grid(row=2,column=0)
+            self.task_desc.grid(row=2,column=0,pady=(10,0))
             self.show_desc.grid_remove()
 
         def hide_wg():
@@ -174,20 +174,17 @@ class NewTaskFrame(Frame):
             self.show_desc.grid(row=2,column=0)
             self.hide_desc.grid_remove()
 
-        # Task Description
+        # Task Description Label
         self.task_desc = Label(self.task_desc_frame, text=desc)
 
-        # Hide Description
+        # Hide Description Button
         self.hide_desc = Button(self.task_desc_frame)
-        self.hide_desc.configure(text='^',width=50,height=1,bd=0, command= hide_wg)
+        self.hide_desc.configure(text='^',width=50,height=1,bd=0.5, command= hide_wg)
 
-        # Show Description
+        # Show Description Button
         self.show_desc = Button(self.task_desc_frame)
-        self.show_desc.configure(text='v',width=50,height=-10,bd=0, command= show_wg)
+        self.show_desc.configure(text='v',width=50,height=-10,bd=0.5, command= show_wg)
         self.show_desc.grid(row=1,column=0)
-
-
-
 
 
 
@@ -195,14 +192,14 @@ class NewTaskFrame(Frame):
 
 # Main window properties
 window.title("Productivity Tracker")
-window.geometry("400x400")
+# window.geometry("400x400")
 # Resize only vertical
 window.resizable(False,True)
 window.configure(bg='grey64')
 
 # Creates the main Frame that contains all the Task frames
 main_frame = Frame(window)
-main_frame.configure(height=50,bg='green')
+main_frame.configure(height=50,bg='grey64')
 main_frame.pack(fill=BOTH)
 
 # show saved tasks from the database into the main window
@@ -214,6 +211,10 @@ def fetchDataBase():
     data_base = c.fetchall()
     conn.commit()
     conn.close()
+    # Check if there is no rows in the database at start
+    if data_base == []:
+        print('no tasks')
+        window.geometry("400x150")
 
 # Run the function
 fetchDataBase()
@@ -222,31 +223,16 @@ fetchDataBase()
 def createTaskWindow():
     NewTask(window)
 
+
+
 # Button to create New Task
-new_task = Button(window,text='New task')
-new_task.configure(text='New task', command=createTaskWindow)
-new_task.pack()
+new_task = Button(window)
+new_task.configure(text='Add Task', command=createTaskWindow)
+new_task.pack(pady=(5,10))
 
 # Takes the global variable 'data_base', creates the NewFrameTask and pass the arguments
 for i in data_base:
     btn1 = NewTaskFrame(i[0],i[1],i[2],i[3],i[4],i[5],i[6])
-
-#-------------------------------------------------
-#-------- crear un boton para eliminar las tareas
-#-------------------------------------------------
-
-def deleteTask():
-    conn = sqlite3.connect('tasks.db')
-    c = conn.cursor()
-    data3='tarea 2'
-    c.execute("DELETE FROM tasks where id=(?)", (1,))
-    conn.commit()
-    conn.close()
-
-
-
-delete_task = Button(window)
-delete_task.configure(text='Delete',command=deleteTask)
 
 
 
