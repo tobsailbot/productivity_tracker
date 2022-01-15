@@ -1,4 +1,3 @@
-# objetivo: crear un frame mediante una clase, y dentro del frame un boton, y un label, el boton deberá poder cambiar el color del label del frame propio
 
 from tkinter import *
 from tkinter import ttk
@@ -59,6 +58,10 @@ class NewTaskFrame(Frame):
         self.show_desc = Button(self.task_desc_frame)
         self.show_desc.configure(text='v',width=50,height=-10,bd=0, command= show_wg)
         self.show_desc.grid(row=1,column=0)
+
+        self.delete_button = Button(self)
+        self.delete_button.configure(text='delete task')
+        self.delete_button.grid(row=1,column=0)
 
 def dothings():
     print('Button class worked')

@@ -8,14 +8,14 @@ window = Tk()
 global data_base
 data_base = None
 
-# ---------- New Task Top Level window ----------------
+# ------------ New Task Top Level window -----------------
 
 class NewTask(Toplevel):
 
     def __init__(self, window=None):
         super().__init__(master=window)
         self.grab_set()
-        window.resizable(False, False)
+        self.resizable(False, False)
         self.title("New Task")
 
         # frame widget
@@ -111,7 +111,7 @@ class NewTask(Toplevel):
 
             c.execute("SELECT * FROM tasks")
             new_task = c.fetchall()[-1]
-            NewTaskFrame(new_task[1],new_task[2],new_task[3],new_task[4],new_task[5],new_task[6])
+            NewTaskFrame(new_task[0],new_task[1],new_task[2],new_task[3],new_task[4],new_task[5],new_task[6])
             global data_base
             data_base = c.fetchall()
             conn.commit()
@@ -122,7 +122,7 @@ class NewTask(Toplevel):
 #-------------------------- New Task frame class -------------------------------
 
 class NewTaskFrame(Frame):
-    def __init__(self, name, fromH, fromM, toH, toM, desc, **kwargs):
+    def __init__(self,id, name, fromH, fromM, toH, toM, desc, **kwargs):
         # pack into main_frame
         Frame.__init__(self,main_frame)
 
@@ -138,9 +138,30 @@ class NewTaskFrame(Frame):
         self.task_time = Label(self, text=f'{fromH}:{fromM} - {toH}:{toM}')
         self.task_time.grid(row=0,column=0,sticky='E',padx=(0,10))
 
+        # get the row id
+        self.id = id
+        print(self.id)
+
+        def deleteFrame():
+            MsgBox = messagebox.askquestion('Exit Application', 'Are you sure you want to delete this task?',icon='warning')
+            if MsgBox == 'yes':
+                self.pack_forget()
+                conn = sqlite3.connect('tasks.db')
+                c = conn.cursor()
+                c.execute("DELETE FROM tasks where id=(?)", (self.id,))
+                conn.commit()
+                conn.close()
+            else:
+                return
+
+        self.delete_btn = Button(self)
+        self.delete_btn.configure(text='Delete Task',command=deleteFrame)
+        self.delete_btn.grid(sticky='E')
+
         # Task description Frame
         self.task_desc_frame = Frame(self,highlightbackground="black",highlightthickness=1)
         self.task_desc_frame.grid()
+
 
         # Define a function to show/hide widget
         def show_wg():
@@ -166,11 +187,17 @@ class NewTaskFrame(Frame):
         self.show_desc.grid(row=1,column=0)
 
 
-# ----------------------- Main Window ----------------------
+
+
+
+
+# ----------------------- Main Window ------------------------
 
 # Main window properties
 window.title("Productivity Tracker")
-# window.geometry("400x800")
+window.geometry("400x400")
+# Resize only vertical
+window.resizable(False,True)
 window.configure(bg='grey64')
 
 # Creates the main Frame that contains all the Task frames
@@ -202,7 +229,7 @@ new_task.pack()
 
 # Takes the global variable 'data_base', creates the NewFrameTask and pass the arguments
 for i in data_base:
-    btn1 = NewTaskFrame(i[1],i[2],i[3],i[4],i[5],i[6])
+    btn1 = NewTaskFrame(i[0],i[1],i[2],i[3],i[4],i[5],i[6])
 
 #-------------------------------------------------
 #-------- crear un boton para eliminar las tareas
@@ -220,7 +247,7 @@ def deleteTask():
 
 delete_task = Button(window)
 delete_task.configure(text='Delete',command=deleteTask)
-delete_task.pack()
+
 
 
 mainloop()
