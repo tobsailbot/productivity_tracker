@@ -146,7 +146,7 @@ class BreakNotif(Toplevel):
         return f'{five_min_float:.2f}'
 
     def update(self):
-        """ update the label every 1 second """  # iterative function
+        """ update the label every 1 second """  # iterative function repeats itself
         self.label1.configure(text=self.time_string())
         self.label1.after(1000, self.update)
 
