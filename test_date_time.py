@@ -52,7 +52,7 @@
 
 import os
 
-os.system("python task_notification.py 1 32")
+os.system("python task_notification.py 2 32")
 
 
 

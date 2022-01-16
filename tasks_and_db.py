@@ -1,8 +1,10 @@
+
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 import datetime
 import sqlite3
+import os
 
 window = Tk()
 
@@ -244,14 +246,20 @@ actual_time = str(datetime.datetime.now())
 
 
 def actualTime():
+
+    hh = 0
+    mm = 0
+
     global actual_time
     actual_time = str(datetime.datetime.now())
+
     # Extract the hours an minutes
     hour_now = int(actual_time[11:13])
     min_now = int(actual_time[14:16])
     sec_now = int(actual_time[17:19])
     print(f'horas: {hour_now}')
     print(f'minutes: {min_now}')
+
     # Fetch the database
     conn = sqlite3.connect('tasks.db')
     c = conn.cursor()
@@ -259,40 +267,46 @@ def actualTime():
     data_base = c.fetchall()
     conn.commit()
     conn.close()
+
     # Check database times
     for i in data_base:
         print(i[2],i[3])
         if hour_now == i[2] and min_now == i[3]:
+
+            # Calcular cuantas horas y minutos necesarios para realizar la tarea
+            # If the start minutes are greater than the end minutes…
+            if i[3] > i[5]:
+                hh = (i[4]) - 1
+                mm = (i[5]) + 60
+                mm = mm - (i[3])
+                hh = hh - (i[2])
+            # f sar minutes are lower than end minutes
+            if i[3] <= i[5]:
+                hh = i[4] - i[2]
+                mm = i[5] - i[3]
+
+            print([hh, mm])
             print(True)
             print('Comenzar la taarea!')
 
-# Calcular cuantas horas y minutos necesarios para realizar la tarea
-def getTaskDuration():
-    for i in data_base:
-        hh = 0
-        mm = 0
+            # Delete the task from the database
+            conn = sqlite3.connect('tasks.db')
+            c = conn.cursor()
+            c.execute("DELETE FROM tasks where id=(?)", (i[0],))
+            conn.commit()
+            conn.close()
 
-        # print(i[2], ':',i[3], '-',i[4], ':',i[5])
-
-        # If the start minutes are greater than the end minutes…
-        if i[3] > i[5]:
-            hh = (i[4]) - 1
-            mm = (i[5]) + 60
-            mm = mm - (i[3])
-            hh = hh - (i[2])
-        # f sar minutes are lower than end minutes
-        if i[3] <= i[5]:
-            hh = i[4] - i[2]
-            mm = i[5] - i[3]
-
-        print(hh,':',mm)
+            os.system(f"python task_notification.py {hh} {mm}")
 
 
+
+# Actualiza cada 1 minuto
 def updateWindow():
-    window.after(60000,actualTime)
+    window.after(60000,actualTime)        #---------------- Update time in ms
     window.after(60000,updateWindow)
 
 updateWindow()
 
-mainloop()
 
+
+mainloop()
