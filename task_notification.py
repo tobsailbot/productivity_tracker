@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import messagebox
+import sys
 
 # ----------------------------------------------------------------------------------------
 
@@ -21,6 +22,11 @@ five_min = None
 running = False
 # time variables initially set to 0
 hours, minutes, seconds = 0, 10, 0
+
+
+# Pass the arguments from other file or console
+hours = int(sys.argv[1])
+minutes = int(sys.argv[2])
 
 
 # ***** FUNCTIONS *****
@@ -82,18 +88,18 @@ def update():
     # after each second (1000 milliseconds), call update function
     # use update_time variable to cancel or pause the time using after_cancel
     global update_time
-    update_time = stopwatch_label.after(10, update)
+    update_time = stopwatch_label.after(1000, update)    # ---------------------------------------------    UPDATE PRIMARY CLOCK TIME IN MS
 
     update_break = int(update_time[6:])
     if hours > 0 or minutes > 0 or seconds > 0:
         if update_break != 0:
             # make a break window when 1500 seconds have passed / 25 minutes
-            if update_break % 500 == 0:
+            if update_break % 1500 == 0:  # ------------------------------------------------------------    THE TIME WHEN THE BREAK APPEARS
                 print(update_break)
                 print('hora del break')
                 # set the five min break text label in seconds
                 global five_min
-                five_min = 300
+                five_min = 300000     # ----------------------------------------------------------------    THE BREAK DURATION
                 # creates the new window break
                 BreakNotif(window)
 
@@ -117,20 +123,24 @@ class BreakNotif(Toplevel):
         super().__init__(master=window)
 
         self.title("New Window")
-        self.geometry("200x200")
+        screen_corner = screen_x * 2 - 400
+        self.geometry(f"400x200+{screen_corner}+{0}")
         self.attributes('-topmost', True)
-        self.attributes('-fullscreen', True)
+        self.overrideredirect(1)  # borderless window
+        self.attributes('-alpha', 0.7) #opacity
 
-        self.frame1 = Frame(self, bg='SteelBlue3')
+        self.frame1 = Frame(self, bg='SteelBlue3',highlightbackground="black",highlightthickness=1)
         self.frame1.pack(fill=BOTH, expand=True)
 
-        self.notification = Label(self.frame1, text='Break Time:...', font=('Digital-7', 40))
+        self.notification = Label(self.frame1, text='Break Time:...', font=('Digital-7', 40),bg='SteelBlue3',fg='white')
         self.notification.pack(expand=True)
 
         self.label1 = Label(
             self.frame1,
             text=self.time_string(),
-            font=('Digital-7', 48))
+            font=('Digital-7', 48),
+            bg='SteelBlue3',
+            fg='white')
 
         self.label1.pack(expand=True)
 
@@ -206,7 +216,7 @@ screen_x = int(screen_width / 2)
 window.attributes('-topmost', True)
 window.resizable(False, False)
 window.overrideredirect(1)  # borderless window
-window.attributes('-alpha', 0.8)
+window.attributes('-alpha', 0.7)
 window.geometry(f'{150}x{67}+{screen_x}+{0}')  # window size(x) and position (+)
 
 # frame widget
